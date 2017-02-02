@@ -450,8 +450,8 @@ public class AddressBook {
      * @return feedback display message for the operation result
      */
     private static String executeFindPersons(String commandArgs) {
-        final Set<String> keywords = extractKeywordsFromFindPersonArgs(commandArgs);
-        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyKeyword(keywords);
+        final Set<String> keywords = extractKeywordsFromFindPersonArgsInLowerCase(commandArgs);
+        final ArrayList<String[]> personsFound = getPersonsWithNameContainingAnyCaseInsensitiveKeyword(keywords);
         showToUser(personsFound);
         return getMessageForPersonsDisplayedSummary(personsFound);
     }
@@ -472,8 +472,8 @@ public class AddressBook {
      * @param findPersonCommandArgs full command args string for the find persons command
      * @return set of keywords as specified by args
      */
-    private static Set<String> extractKeywordsFromFindPersonArgs(String findPersonCommandArgs) {
-        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim()));
+    private static Set<String> extractKeywordsFromFindPersonArgsInLowerCase(String findPersonCommandArgs) {
+        return new HashSet<>(splitByWhitespace(findPersonCommandArgs.trim().toLowerCase()));
     }
 
     /**
@@ -482,11 +482,11 @@ public class AddressBook {
      * @param keywords for searching
      * @return list of persons in full model with name containing some of the keywords
      */
-    private static ArrayList<String[]> getPersonsWithNameContainingAnyKeyword(Collection<String> keywords) {
+    private static ArrayList<String[]> getPersonsWithNameContainingAnyCaseInsensitiveKeyword(Collection<String> keywords) {
         final ArrayList<String[]> matchedPersons = new ArrayList<>();
         for (String[] person : getAllPersonsInAddressBook()) {
-            final Set<String> wordsInName = new HashSet<>(splitByWhitespace(getNameFromPerson(person)));
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            final Set<String> wordsInNameInLowerCase = new HashSet<>(splitByWhitespace(getNameFromPerson(person).toLowerCase()));
+            if (!Collections.disjoint(wordsInNameInLowerCase, keywords)) {
                 matchedPersons.add(person);
             }
         }
